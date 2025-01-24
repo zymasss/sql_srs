@@ -12,6 +12,16 @@ df=pd.DataFrame(data)
 
 
 option = st.selectbox(
+    "WHat would like to review?",
+    ("Join", "GroupBy", "Windows Functions"),
+    index=None,
+    placeholder="Select a theme..."
+)
+
+st.write("You selected:", option)
+
+
+option = st.selectbox(
     "What would like to review ?",
     ("Join", "GroupBy", "Windows Functions"),
     index=None,
