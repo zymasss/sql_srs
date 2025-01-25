@@ -4,7 +4,6 @@ import pandas as pd
 import duckdb
 
 
-
 csv = '''
 beverage,price
 orange juice, 2.5
@@ -44,7 +43,7 @@ if query:
     result=duckdb.sql(answer).df()
     st.dataframe(result)
 
-tab2, tab3 = ['Tables','Solution']
+tab2, tab3 = st.tabs(['Tables','Solution'])
 
 with tab2:
     st.write('table: beverages')
