@@ -53,14 +53,16 @@ if query:
 tab2, tab3 = st.tabs(["Tables", "Solution"])
 
 with tab2:
-    exercice_tables=ast.literal_eval(exercise.loc[0, "tables"])
+    exercise_tables=ast.literal_eval(exercise.loc[0, "tables"])
 
-    for table in exercice_tables:
+    for table in exercise_tables:
         st.write(f"table : {table}")
         df_table = con.execute(f"SELECT * FROM {table}")
         st.dataframe(df_table)
 
 #
 with tab3:
-    ANSWER_STR = (exercise.loc[0, "answer"])
-    st.write(ANSWER_STR)
+    exercise_name = (exercise.loc[0, "exercise_name"])
+    with open(f"answers/{exercise_name}", "r") as f:
+        answer = f.read()
+    st.write(answer)
