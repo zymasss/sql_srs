@@ -36,6 +36,7 @@ print(con.execute("SHOW TABLES").df())
 if query:
     result = con.execute(query).df()
     st.dataframe(result)
+
 #
 #    try:
 #        result = result[solution_df.columns]
@@ -50,7 +51,9 @@ if query:
 #        )
 #
 #
-tab2, tab3 = st.tabs(["Tables", "Solution"])
+
+tab2, tab3 = st.tabs(['Tables','Solution'])
+
 
 with tab2:
     exercise_tables=ast.literal_eval(exercise.loc[0, "tables"])
@@ -60,7 +63,7 @@ with tab2:
         df_table = con.execute(f"SELECT * FROM {table}")
         st.dataframe(df_table)
 
-#
+
 with tab3:
     exercise_name = (exercise.loc[0, "exercise_name"])
     with open(f"answers/{exercise_name}", "r") as f:
