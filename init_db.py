@@ -13,6 +13,8 @@ data = {
     "exercise_name": ["beverages_and_food", "sizes_and_trademarks"],
     "tables": [["beverages", "food_items"], ["sizes", "trademarks"]],
     "last_reviewed": ["1980-01-01", "1970-01-01"],
+    "instructions" : ["Affiche toutes les combinaisons de menus disponible",
+                      "Affiche pour toutes les tailles pour toutes les marques"],
 }
 memory_state_df = pd.DataFrame(data)
 con.execute("CREATE OR REPLACE TABLE memory_state AS SELECT * FROM memory_state_df")
