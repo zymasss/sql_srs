@@ -64,8 +64,12 @@ with st.sidebar:
         .sort_values("last_reviewed")
         .reset_index(drop=True)
     )
+    exercise_instructions = exercise.loc[0, "instructions"]
+    st.subheader("Consigne de l'exercice :")
+    st.write(exercise_instructions)
     st.write(exercise)
     exercise_name = exercise.loc[0, "exercise_name"]
+
     with open(f"answers/{exercise_name}.sql", "r") as f:
         answer = f.read()
 
@@ -73,7 +77,7 @@ with st.sidebar:
 
 st.header("enter your code:")
 form = st.form("my_form")
-query = form.text_area(label="votre code SQL ici", key="user_input")
+query = form.text_area(label="Enter your SQL code", key="user_input")
 form.form_submit_button("Submit")
 
 if query:
