@@ -24,24 +24,34 @@ def check_users_solution(user_query: str) -> None:
     """
     Checks that user SQL query is correct by:
     1: checking the columns
-    2: checking the values
+    2: checking the values (ignoring row order)
     :param user_query: a string containing the query inserted by the user
     """
     result = con.execute(user_query).df()
+
+    # Trier les résultats pour éviter des différences dues à l'ordre des lignes
+    result = result.sort_values(list(result.columns)).reset_index(drop=True)
+    solution_sorted = solution_df.sort_values(list(solution_df.columns)).reset_index(drop=True)
+
     st.dataframe(result)
     try:
-        result = result[solution_df.columns]
-        st.dataframe(result.compare(solution_df))
-        if result.compare(solution_df).shape == (0, 0):
+        result = result[solution_sorted.columns]  # S'assurer que les colonnes sont alignées
+        differences = result.compare(solution_sorted)  # Comparer les DataFrames triés
+
+        st.dataframe(differences)  # Afficher les différences si elles existent
+
+        if differences.shape == (0, 0):  # Vérifier s'il n'y a aucune différence
             st.write("Correct !")
             st.balloons()
     except KeyError as e:
         st.write("Some columns are missing")
-    n_lines_difference = result.shape[0] - solution_df.shape[0]
+
+    n_lines_difference = result.shape[0] - solution_sorted.shape[0]
     if n_lines_difference != 0:
         st.write(
             f"result has a {n_lines_difference} lines difference with the solution_df"
         )
+
 
 
 with st.sidebar:

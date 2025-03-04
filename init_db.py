@@ -9,13 +9,14 @@ con = duckdb.connect(database="data/exercises_sql_tables.duckdb", read_only=Fals
 # ------------------------------------------------------------
 
 data = {
-    "theme": ["cross_joins", "cross_joins", "case_when"],
-    "exercise_name": ["beverages_and_food", "sizes_and_trademarks", "employees_and_wage"],
-    "tables": [["beverages", "food_items"], ["sizes", "trademarks"], ['employees']],
-    "last_reviewed": ["1980-01-01", "1970-01-01", "1970-01-01"],
-    "instructions" : ["Affiche toutes les combinaisons de menus disponible",
-                      "Affiche pour toutes les tailles pour toutes les marques",
-                      "Appliquez une augmentation de 10% pour l'IT, 5% pour l'HR, 3% pour les SALES et 0% pour les autres"],
+    "theme": ["cross_joins", "cross_joins", "case_when", "case_when"],
+    "exercise_name": ["beverages_and_food", "sizes_and_trademarks", "employees_and_wage", "orders_discout"],
+    "tables": [["beverages", "food_items"], ["sizes", "trademarks"], ['employees'], ["orders"]],
+    "last_reviewed": ["1980-01-01", "1970-01-01", "1970-01-01", "1970-01-01"],
+    "instructions" : ["Affiche toutes les combinaisons de menus disponibles.",
+                      "Affiche pour toutes les tailles pour toutes les marques.",
+                      "Appliquez une augmentation de 10% pour l'IT, 5% pour l'HR, 3% pour les SALES et 0% pour les autres.",
+                      "Créez une CTE intégrant une expression CASE WHEN afin de calculer une nouvelle colonne nommée total_revenue, prenant en compte les réductions appliquées. Ensuite, utilisez cette table intermédiaire pour calculer le revenu total après déduction des réductions. (ordre décroissant)"],
 }
 memory_state_df = pd.DataFrame(data)
 con.execute("CREATE OR REPLACE TABLE memory_state AS SELECT * FROM memory_state_df")
@@ -84,6 +85,21 @@ Benjamin,110000,CEO
 
 employees = pd.read_csv(io.StringIO(employees))
 con.execute("CREATE OR REPLACE TABLE employees AS SELECT * FROM employees")
+
+
+orders = """
+order_id,product_id,quantity,price_per_unit,discount_code
+1,101,5,10.0,None
+2,102,3,25.0,DISCOUNT10
+3,101,2,10.0,DISCOUNT20
+4,103,4,8.0,None
+5,102,6,25.0,None
+6,103,2,8.0,UNKNOWN
+"""
+
+orders = pd.read_csv(io.StringIO(orders))
+con.execute("CREATE OR REPLACE TABLE orders AS SELECT * FROM orders")
+
 
 
 con.close()
