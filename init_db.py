@@ -9,15 +9,16 @@ con = duckdb.connect(database="data/exercises_sql_tables.duckdb", read_only=Fals
 # ------------------------------------------------------------
 
 data = {
-    "theme": ["cross_joins", "cross_joins", "case_when", "case_when", "case_when"],
-    "exercise_name": ["beverages_and_food", "sizes_and_trademarks", "employees_and_wage", "orders_discout", "employees_sal_range"],
-    "tables": [["beverages", "food_items"], ["sizes", "trademarks"], ['employees'], ["orders"], ['employees']],
-    "last_reviewed": ["1980-01-01", "1970-01-01", "1970-01-01", "1970-01-01", "1970-01-01"],
+    "theme": ["cross_joins", "cross_joins", "case_when", "case_when", "case_when", "full_outer_join"],
+    "exercise_name": ["beverages_and_food", "sizes_and_trademarks", "employees_and_wage", "orders_discout", "employees_sal_range", "product_n_store"],
+    "tables": [["beverages", "food_items"], ["sizes", "trademarks"], ['employees'], ["orders"], ['employees'], ["stores","products"]],
+    "last_reviewed": ["1980-01-01", "1970-01-01", "1970-01-01", "1970-01-01", "1970-01-01", "1970-01-01"],
     "instructions" : ["Affiche toutes les combinaisons de menus disponibles.",
                       "Affiche pour toutes les tailles pour toutes les marques.",
                       "Appliquez une augmentation de 10% pour l'IT, 5% pour l'HR, 3% pour les SALES et 0% pour les autres.",
                       "Créez une CTE intégrant une expression CASE WHEN afin de calculer une nouvelle colonne nommée total_revenue, prenant en compte les réductions appliquées. Ensuite, utilisez cette table intermédiaire pour calculer le revenu total après déduction des réductions. (ordre décroissant)",
-                      "Utilisez une CTE pour créer une colonne 'salary_range' avec 'Low' quand salaires < à 50 000, 'Medium' < à 90 000, et 'High' pour les autres. Calculez la moyenne des salaires pour chaque catégorie et affichez le nombre de personnes incluses dans chaque regroupement."],
+                      "Utilisez une CTE pour créer une colonne 'salary_range' avec 'Low' quand salaires < à 50 000, 'Medium' < à 90 000, et 'High' pour les autres. Calculez la moyenne des salaires pour chaque catégorie et affichez le nombre de personnes incluses dans chaque regroupement.",
+                      "Faire une jointure (outer join) pour rassembler les stores avec le détail des produits"],
 }
 memory_state_df = pd.DataFrame(data)
 con.execute("CREATE OR REPLACE TABLE memory_state AS SELECT * FROM memory_state_df")
@@ -101,5 +102,31 @@ order_id,product_id,quantity,price_per_unit,discount_code
 orders = pd.read_csv(io.StringIO(orders))
 con.execute("CREATE OR REPLACE TABLE orders AS SELECT * FROM orders")
 
+
+stores = """
+customer_id,customer_name,store_id,product_id
+11,Zeinaba,1.0,101.0
+11,Zeinaba,1.0,103.0
+11,Zeinaba,1.0,105.0
+12,Tancrède,2.0,101.0
+12,Tancrède,2.0,103.0
+13,Israel,3.0,104.0
+14,Kaouter,NaN,NaN
+15,Alan,4.0,105.0
+"""
+
+stores = pd.read_csv(io.StringIO(stores))
+con.execute("CREATE OR REPLACE TABLE stores AS SELECT * FROM stores")
+
+products = """
+product_id,product_name,product_price
+100,Cherry coke,3
+101,Laptop,800
+103,Ipad,400
+104,Livre,30
+"""
+
+products = pd.read_csv(io.StringIO(products))
+con.execute("CREATE OR REPLACE TABLE products AS SELECT * FROM products")
 
 con.close()
