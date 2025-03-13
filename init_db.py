@@ -9,16 +9,17 @@ con = duckdb.connect(database="data/exercises_sql_tables.duckdb", read_only=Fals
 # ------------------------------------------------------------
 
 data = {
-    "theme": ["cross_joins", "cross_joins", "case_when", "case_when", "case_when", "full_outer_join"],
-    "exercise_name": ["beverages_and_food", "sizes_and_trademarks", "employees_and_wage", "orders_discout", "employees_sal_range", "product_n_store"],
-    "tables": [["beverages", "food_items"], ["sizes", "trademarks"], ['employees'], ["orders"], ['employees'], ["stores","products"]],
-    "last_reviewed": ["1980-01-01", "1970-01-01", "1970-01-01", "1970-01-01", "1970-01-01", "1970-01-01"],
+    "theme": ["cross_joins", "cross_joins", "case_when", "case_when", "case_when", "full_outer_join", "grouping_sets"],
+    "exercise_name": ["beverages_and_food", "sizes_and_trademarks", "employees_and_wage", "orders_discout", "employees_sal_range", "product_n_store", "population_evol"],
+    "tables": [["beverages", "food_items"], ["sizes", "trademarks"], ['employees'], ["orders"], ['employees'], ["stores","products"], ["populations"]],
+    "last_reviewed": ["1980-01-01", "1970-01-01", "1970-01-01", "1970-01-01", "1970-01-01", "1970-01-01", "1970-01-01"],
     "instructions" : ["Affiche toutes les combinaisons de menus disponibles.",
                       "Affiche pour toutes les tailles pour toutes les marques.",
                       "Appliquez une augmentation de 10% pour l'IT, 5% pour l'HR, 3% pour les SALES et 0% pour les autres.",
                       "Créez une CTE intégrant une expression CASE WHEN afin de calculer une nouvelle colonne nommée total_revenue, prenant en compte les réductions appliquées. Ensuite, utilisez cette table intermédiaire pour calculer le revenu total après déduction des réductions. (ordre décroissant)",
                       "Utilisez une CTE pour créer une colonne 'salary_range' avec 'Low' quand salaires < à 50 000, 'Medium' < à 90 000, et 'High' pour les autres. Calculez la moyenne des salaires pour chaque catégorie et affichez le nombre de personnes incluses dans chaque regroupement.",
-                      "Faire une jointure (outer join) pour rassembler les stores avec le détail des produits"],
+                      "Faire une jointure (outer join) pour rassembler les stores avec le détail des produits",
+                      "Utilisez GROUPING SETS pour agréger les données de population par année et région, tout en calculant également le total de la population par année."],
 }
 memory_state_df = pd.DataFrame(data)
 con.execute("CREATE OR REPLACE TABLE memory_state AS SELECT * FROM memory_state_df")
@@ -128,5 +129,27 @@ product_id,product_name,product_price
 
 products = pd.read_csv(io.StringIO(products))
 con.execute("CREATE OR REPLACE TABLE products AS SELECT * FROM products")
+
+populations = """
+year,region,population
+2016,IDF,1010000
+2017,IDF,1020000
+2018,IDF,1030000
+2019,IDF,1040000
+2020,IDF,1000000
+2016,HDF,910000
+2017,HDF,920000
+2018,HDF,930000
+2019,HDF,940000
+2020,HDF,900000
+2016,PACA,810000
+2017,PACA,820000
+2018,PACA,830000
+2019,PACA,840000
+2020,PACA,950000
+"""
+
+populations = pd.read_csv(io.StringIO(populations))
+con.execute("CREATE OR REPLACE TABLE populations AS SELECT * FROM populations")
 
 con.close()
